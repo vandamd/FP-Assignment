@@ -36,6 +36,7 @@ def ShowList():                                       # Shows list of locations
     df = pd.read_csv(url)
     areaList = df['areaName'].tolist()
     print(set(areaList))
+    len(set(areaList))
     
 
 
@@ -80,7 +81,13 @@ def graphgen(userLocationsList):
     if N == 1:
         df = pd.read_csv(url)
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
-        
+        print(df_filtered)
+        min_value = df['date'].min()
+        max_value = df['date'].max()
+        print('Select a time range between', min_value, 'and', max_value)
+        start_date = input('Input desired start date as follows(YYYY-MM-DD):' )
+        end_date = input('Input desired end date as follows(YYYY-MM-DD):' )
+        #df_filtered.get_value([0], 'date')
         ### ACTUAL GRAPH GEN PART ###
         fig = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
         fig.show()
