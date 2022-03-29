@@ -93,6 +93,7 @@ def graphgen(userLocationsList):
         #df_filtered.get_value([0], 'date')
         ### ACTUAL GRAPH GEN PART ###
         fig = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
+        fig.update_layout(xaxis_range=[start_date,end_date]) 
         fig.show()
         
         
