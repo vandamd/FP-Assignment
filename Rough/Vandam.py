@@ -30,12 +30,17 @@ def UserChoice():                                    # Initial startup question
 
 
 
-# Shows list of locations
 def ShowList():                                       # Shows list of locations
+    """
+      - Currently reads all the data in the areaName column of the csv file.
+      - Sorts into a list, then prints a set to remove duplicates
+    """
     df = pd.read_csv(url)
     areaList = df['areaName'].tolist()
     print(set(areaList))
-    
+    restart = input('\nTo continue press enter: ')
+    if restart == '':
+        UserChoice()
 
 
 
@@ -71,7 +76,11 @@ def LocationInput():
 
 # Generates Graph
 def graphgen(userLocationsList):
-
+    """
+      - Determines the number of cities entered
+      - If there is one city entered, generates a graph of covid cases
+      - If there is more than one city entered, poop is outputted
+    """
     # The number of words in userLocations
     N = len(userLocationsList)
     
@@ -79,7 +88,6 @@ def graphgen(userLocationsList):
     if N == 1:
         df = pd.read_csv(url)
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
-        
         ### ACTUAL GRAPH GEN PART ###
         fig = px.line(df_filtered, x ='date', y ='cumCasesBySpecimenDate', title='Covid Rates')
         fig.show()
