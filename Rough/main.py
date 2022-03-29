@@ -82,7 +82,7 @@ def graphgen(userLocationsList):
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
         
         ### ACTUAL GRAPH GEN PART ###
-        fig = px.line(df_filtered, x ='date', y ='cumCasesBySpecimenDate', title='Covid Rates')
+        fig = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
         fig.show()
     elif N > 1:
         print('poop')
