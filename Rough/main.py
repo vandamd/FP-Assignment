@@ -14,11 +14,18 @@ url = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCases
 
 
 ##### FUNCTIONS #####
-def UserChoice():                                    # Initial startup question
+def UserChoice():     # Initial startup question
     global choice
     choice = input(
-        '\nPlease choose what to do:\n  l: Show list of locations\n  c: '
-        'Choose locations\n  q: Quit\n\n» Action: ')
+        '\nPlease choose what to do: \n  l: Show list of locations\n  q: Quit\n\n» Action: ')
+
+def UserChoice2():     #selection after seeing the list
+    global choice
+    choice = input(
+        '\nPlease choose what to do next: \n  c: '
+        'Choose a location\n  q: Quit\n\n» Action: ')
+
+
 
 
 
@@ -88,9 +95,12 @@ def graphgen(userLocationsList):
 
 
 ##### TEST AREA #####
+
 UserChoice()
 if choice == 'l':
     ShowList()
-if choice == 'c':
-    LocationInput()
-    graphgen(userLocationsList)
+    UserChoice2()
+    if choice == 'c':
+        LocationInput()
+        graphgen(userLocationsList)
+
