@@ -81,7 +81,10 @@ def graphgen(userLocationsList):
     if N == 1:
         df = pd.read_csv(url)
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
-        print(df_filtered)
+        # print(df_filtered)
+        df_new = df_filtered.reset_index(drop=True)
+        
+        
         min_value = df['date'].min()
         max_value = df['date'].max()
         print('Select a time range between', min_value, 'and', max_value)
@@ -91,6 +94,22 @@ def graphgen(userLocationsList):
         ### ACTUAL GRAPH GEN PART ###
         fig = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
         fig.show()
+        
+        
+        date = df_new.loc[0,'date']
+        
+        first_dose_people = df_new.loc[0,'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        
+        second_dose_people = df_new.loc[0,'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        
+        third_dose_people = df_new.loc[0,'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        
+        values = [first_dose_people, second_dose_people, third_dose_people]
+                
+        fig1 = px.pie(names=['First Dose','Second Dose', 'Third Injection'], values=values)
+        
+        fig1.show()
+        
     elif N > 1:
         print('poop')
 
