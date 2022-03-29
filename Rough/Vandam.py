@@ -17,7 +17,7 @@ pio.renderers.default = 'browser'           # Displays the graph in the Browser
 
 # Spreadsheet for all COVID-19 Cases and Vaccine Doses for all areas in the UK
 url = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCasesBySpecimenDate&metric=cumPeopleVaccinatedFirstDoseByVaccinationDate&metric=cumPeopleVaccinatedSecondDoseByVaccinationDate&metric=cumPeopleVaccinatedThirdInjectionByVaccinationDate&format=csv'
-
+url2 = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumPeopleVaccinatedFirstDoseByVaccinationDate&metric=cumPeopleVaccinatedSecondDoseByVaccinationDate&metric=cumPeopleVaccinatedThirdInjectionByVaccinationDate&metric=newCasesBySpecimenDate&metric=cumCasesBySpecimenDate&format=csv'
 
 ##### FUNCTIONS #####
 def UserChoice():                                    # Initial startup question
@@ -69,6 +69,8 @@ def LocationInput():
     userLocations = userLocations.replace(" ", "|")
     # Splits cities into a list, where the user seperates the cities with commas
     userLocationsList = userLocations.split(",")
+    
+    
 
 
 
@@ -86,10 +88,12 @@ def graphgen(userLocationsList):
     
     # Instance for 1 Location inputted
     if N == 1:
-        df = pd.read_csv(url)
+        df = pd.read_csv(url2)
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
         ### ACTUAL GRAPH GEN PART ###
-        fig = px.line(df_filtered, x ='date', y ='cumCasesBySpecimenDate', title='Covid Rates')
+        #fig = px.line(df_filtered, x = 'date', y = ['newCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'])
+        fig = px.line(df_filtered, x = 'date', y = ['newCasesBySpecimenDate', 'cumCasesBySpecimenDate'])
+        #fig.update_layout(xaxis_range=[start_date,end_date])
         fig.show()
     elif N > 1:
         print('poop')
