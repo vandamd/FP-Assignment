@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 pio.renderers.default = 'browser'           # Displays the graph in the Browser
-from plotly.subplots import make_subplots
+# from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
 
@@ -111,12 +111,6 @@ def graphgen(userLocationsList):
                 
         fig2 = go.Figure(data=[go.Pie(labels=['First Dose','Second Dose', 'Third Injection'], values=values, textinfo='label+percent', pull=[0.1,0.1,0.1])])
         
-        fig2.show()
-        
-        fig = make_subplots(rows=2, cols=1, shared_xaxes=False)
-        fig.add_trace(fig1['data'][0], row=1, col=1)
-        fig.add_trace(fig2['data'][0], row=2, col=1)
-        fig.show()
         
     elif N > 1:
         print('poop')
