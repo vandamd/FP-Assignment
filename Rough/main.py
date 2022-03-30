@@ -5,6 +5,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 pio.renderers.default = 'browser'           # Displays the graph in the Browser
+from plotly.subplots import make_subplots
+import plotly.graph_objs as go
 
 
 ##### URLS #####
@@ -92,12 +94,12 @@ def graphgen(userLocationsList):
         end_date = input('Input desired end date as follows(YYYY-MM-DD):' )
         #df_filtered.get_value([0], 'date')
         ### ACTUAL GRAPH GEN PART ###
-        fig = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
-        fig.update_layout(xaxis_range=[start_date,end_date]) 
-        fig.show()
+        fig1 = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
+        fig1.update_layout(xaxis_range=[start_date,end_date]) 
+        fig1.show()
         
         
-        date = df_new.loc[0,'date']
+        # date = df_new.loc[0,'date']
         
         first_dose_people = df_new.loc[0,'cumPeopleVaccinatedFirstDoseByVaccinationDate']
         
@@ -107,9 +109,14 @@ def graphgen(userLocationsList):
         
         values = [first_dose_people, second_dose_people, third_dose_people]
                 
-        fig1 = px.pie(names=['First Dose','Second Dose', 'Third Injection'], values=values)
+        fig2 = go.Figure(data=[go.Pie(labels=['First Dose','Second Dose', 'Third Injection'], values=values, textinfo='label+percent', pull=[0.1,0.1,0.1])])
         
-        fig1.show()
+        fig2.show()
+        
+        fig = make_subplots(rows=2, cols=1, shared_xaxes=False)
+        fig.add_trace(fig1['data'][0], row=1, col=1)
+        fig.add_trace(fig2['data'][0], row=2, col=1)
+        fig.show()
         
     elif N > 1:
         print('poop')
