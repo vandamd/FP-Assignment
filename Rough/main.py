@@ -111,6 +111,7 @@ def graphgen(userLocationsList):
                 
         fig2 = go.Figure(data=[go.Pie(labels=['First Dose','Second Dose', 'Third Injection'], values=values, textinfo='label+percent', pull=[0.1,0.1,0.1])])
         
+        fig2.show()
         
     elif N > 1:
         print('poop')
