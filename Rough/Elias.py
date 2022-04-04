@@ -1,12 +1,14 @@
 
 
+
 ##### PACKAGES #####
 
-import re
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 pio.renderers.default = 'browser'           # Displays the graph in the Browser
+# from plotly.subplots import make_subplots
+import plotly.graph_objs as go
 
 
 ##### URLS #####
@@ -16,11 +18,19 @@ url = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCases
 
 
 ##### FUNCTIONS #####
-def UserChoice():                                    # Initial startup question
+def UserChoice():     # Initial startup question
     global choice
     choice = input(
-        '\nPlease choose what to do:\n  l: Show list of locations\n  c: '
-        'Choose locations\n  q: Quit\n\n» Action: ')
+        '\nPlease choose what to do: \n  l: Show list of locations\n  q: Quit\n\n» Action: ')
+    
+
+def UserChoice2():     #selection after seeing the list
+    global choice
+    choice = input(
+        '\nPlease choose what to do next: \n  c: '
+        'Choose a location\n  q: Quit\n\n» Action: ')
+
+
 
 
 
@@ -31,6 +41,7 @@ def ShowList():                                       # Shows list of locations
     df = pd.read_csv(url)
     areaList = df['areaName'].tolist()
     print(set(areaList))
+    len(set(areaList))
     
 
 
@@ -75,10 +86,36 @@ def graphgen(userLocationsList):
     if N == 1:
         df = pd.read_csv(url)
         df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
+        # print(df_filtered)
+        df_new = df_filtered.reset_index(drop=True)
         
+        
+        min_value = df['date'].min()
+        max_value = df['date'].max()
+        print('Select a time range between', min_value, 'and', max_value)
+        start_date = input('Input desired start date as follows(YYYY-MM-DD):' )
+        end_date = input('Input desired end date as follows(YYYY-MM-DD):' )
+        #df_filtered.get_value([0], 'date')
         ### ACTUAL GRAPH GEN PART ###
-        fig = px.line(df_filtered, x ='date', y ='cumCasesBySpecimenDate', title='Covid Rates')
-        fig.show()
+        fig1 = px.line(df_filtered, x ='date', y = ['cumCasesBySpecimenDate','cumPeopleVaccinatedFirstDoseByVaccinationDate','cumPeopleVaccinatedSecondDoseByVaccinationDate','cumPeopleVaccinatedThirdInjectionByVaccinationDate'], title='Covid Rates')
+        fig1.update_layout(xaxis_range=[start_date,end_date]) 
+        fig1.show()
+        
+        
+        # date = df_new.loc[0,'date']
+        
+        first_dose_people = df_new.loc[0,'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        
+        second_dose_people = df_new.loc[0,'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        
+        third_dose_people = df_new.loc[0,'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        
+        values = [first_dose_people, second_dose_people, third_dose_people]
+                
+        fig2 = go.Figure(data=[go.Pie(labels=['First Dose','Second Dose', 'Third Injection'], values=values, textinfo='label+percent', pull=[0.1,0.1,0.1])])
+        
+        fig2.show()
+        
     elif N > 1:
         print('poop')
 
@@ -90,9 +127,11 @@ def graphgen(userLocationsList):
 
 
 ##### TEST AREA #####
+
 UserChoice()
 if choice == 'l':
     ShowList()
-if choice == 'c':
-    LocationInput()
-    graphgen(userLocationsList)
+    UserChoice2()
+    if choice == 'c':
+        LocationInput()
+        graphgen(userLocationsList)
