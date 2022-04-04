@@ -22,16 +22,21 @@ def UserChoice():     # Initial startup question
     global choice
     choice = input(
         '\nPlease choose what to do: \n  l: Show list of locations\n  q: Quit\n\n» Action: ')
-    
-
+    while choice != 'l' and choice != 'q':
+        print('Error, please enter l to show list of locations or q to quit')
+        choice = input(
+        '\nPlease choose what to do: \n  l: Show list of locations\n  q: Quit\n\n» Action: ')
+     
 def UserChoice2():     #selection after seeing the list
     global choice
     choice = input(
         '\nPlease choose what to do next: \n  c: '
         'Choose a location\n  q: Quit\n\n» Action: ')
-
-
-
+    while choice != 'c' and choice != 'q':
+        print('Error, please enter l to show list of locations or q to quit')
+        choice = input(
+        '\nPlease choose what to do next: \n  c: '
+        'Choose a location\n  q: Quit\n\n» Action: ')
 
 
 
