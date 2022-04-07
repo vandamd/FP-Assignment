@@ -6,6 +6,11 @@ Vandam :)
 
 ##### PACKAGES #####
 
+# from urllib.request import urlopen
+# import json
+# with urlopen('https://martinjc.github.io/UK-GeoJSON/json/eng/topo_lad.json') as response:
+#     cities = json.load(response)
+
 import re
 import pandas as pd
 import plotly.express as px
@@ -21,7 +26,7 @@ pio.renderers.default = 'browser'           # Displays the graph in the Browser
 url = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCasesBySpecimenDate&metric=cumPeopleVaccinatedFirstDoseByVaccinationDate&metric=cumPeopleVaccinatedSecondDoseByVaccinationDate&metric=cumPeopleVaccinatedThirdInjectionByVaccinationDate&format=csv'
 url2 = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumPeopleVaccinatedFirstDoseByVaccinationDate&metric=cumPeopleVaccinatedSecondDoseByVaccinationDate&metric=cumPeopleVaccinatedThirdInjectionByVaccinationDate&metric=newCasesBySpecimenDate&metric=cumCasesBySpecimenDate&format=csv'
 
-# New Cases, Cumulative Cases, Vaccines
+# New Cases, Cumulative Cases & Vaccines
 url3 = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCasesBySpecimenDate&metric=cumPeopleVaccinatedFirstDoseByVaccinationDate&metric=cumPeopleVaccinatedSecondDoseByVaccinationDate&metric=newCasesBySpecimenDate&metric=cumPeopleVaccinatedThirdInjectionByVaccinationDate&format=csv'
 
 
@@ -29,42 +34,68 @@ url3 = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCase
 
 
 ##### FUNCTIONS #####
-def UserChoice():                                    # Initial startup question
+def UserChoice():
+    """
+      * The initial startup question for the user. 
+      - Sets a variable called 'error' as false. 
+      - While 'error' is not 'false', i.e. while 'error' is true, the input 
+        question will repeat until a correct input is entered.
+      - When the choice 'c' is entered, 'error' becomes 'true', thus stops
+        the while loop.
+      - When the choice 'l' is entered, 'error' stays 'false', and the 
+        ShowList() function is called to show the user the list of locations.
+        UserChoice() is then repeated to allow the user to choose what to do
+        next.
+      - When the choice 'q' is entered, the loop is broken thus stopping the
+        program.
+    """
     global choice
-    choice = input(
-        '\nPlease choose what to do:\n  l: Show list of cities\n  c: '
-        'Choose cities\n  q: Quit\n\n» Action: ')
+    
+    error = False
+    while not error:
+        choice = input(
+            '\nPlease choose what to do:\n  l: Show list of cities\n  c: '
+            'Choose cities\n  q: Quit\n\n» Action: ')
+        if choice in ['c']:
+            error = choice in ['c']
+        elif choice in ['l']:
+            ShowList()
+        elif choice in ['q']:
+            break
+        else:
+            print("\nOops! Didn't quite catch that!")
 
 
 
 
 def ShowList():
     """
-      - Shows the list of locations
+      * Shows the list of locations.
       - Currently reads all the data in the areaName column of the csv file.
-      - Sorts into a list, then prints a set to remove duplicates
+      - Converts the column into a list.
+      - Then converts the list into a set to remove duplicates.
+      - Each of the elements of the set are then seperated with line breaks
+        and outputted for the user to see.
     """
-    df = pd.read_csv(url)
+    df = pd.read_csv(url3)
     areaList = df['areaName'].tolist()
-    print(set(areaList))
-    restart = input('\nTo continue press enter: ')
-    if restart == '':
-        UserChoice()
+    areaSet = set(areaList)
+    areaList = list(areaSet)
+    areaList = sorted(areaList)
+    print()
+    print(*areaList, sep='\n')
 
 
 
 
 def LocationInput():
     """
-      - Asks the user to input a location or multiple locations.
+      * Asks the user to input a location or multiple locations.
       - Removes the spaces after each comma.
-      - Replaces the spaces between the words of two worded cities with |.
-        This allows us to find the exact match of the city later in the
-        graph gen function, instead of matching with other cities. This is 
-        common for cities that contain with 'North', 'South', 'East', 'West'
-        and 'and'.
+      - Splits cities that have commas in between them.
     """
     global userLocationsList
+    
     userLocations = input(
         "Please enter the location(s) you would like data for:\n  You can "
         "enter a single location, or multiple locations seperated with commas."
@@ -74,8 +105,10 @@ def LocationInput():
     
     # Removes the spaces after the commas
     userLocations = userLocations.replace(", ", ",")
+    
     # Replaces the spaces between two-worded cities with |
-    userLocations = userLocations.replace(" ", "|")
+    # userLocations = userLocations.replace(" ", "|")
+    
     # Splits cities into a list, where the user seperates the cities with commas
     userLocationsList = userLocations.split(",")
 
@@ -85,7 +118,7 @@ def LocationInput():
 def timeRange():
     global start_date
     global end_date
-    
+
     df = pd.read_csv(url3)
     df_filtered = df[df['areaName'].str.contains(r'\b' + userLocationsList[0] + r'\b')]
     min_value, max_value = df_filtered['date'].min(), df_filtered['date'].max()
@@ -145,14 +178,14 @@ def graphgen(userLocationsList):
             column_widths=[1, 0.4],
             # row_heights=[0.2, 1],
             specs=[[{"secondary_y": True}, {"type": "pie"}],
-                   [{"type": "scatter"}, None]])
+                   [{"type": "scatter"}, {"type": "choropleth"}]])
         
         fig.add_trace(
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['cumCasesBySpecimenDate'],
                 mode="lines",
-                name="COVID-19 Cases"
+                name="COVID-19 Cases",
             ),
             row=1, col=1
         )
@@ -203,6 +236,33 @@ def graphgen(userLocationsList):
             row=1, col=2
         )
         
+        
+        
+        
+        fig.add_trace(          # GEOGRAPHICAL MAP
+            go.Choropleth(
+                geojson = '/Users/vandam/Library/Mobile Documents/com~apple~CloudDocs/Documents/School/Year 1/Programming/Documents/Further Programming/FP-Assignment/Rough/lad.json',
+                locationmode = 'geojson-id',
+                # featureidkey='properties.LAD13NM',
+                # locations=df_filtered["areaName"],
+                # color=df_filtered["cumCasesBySpecimenDate"],
+                # color_continuous_scale='Reds',
+                # locationmode = 'geojson-id',
+                # color='cumCasesBySpecimenDate',
+                # color=df_filtered['cumCasesBySpecimenDate'],
+                # hover_name=df_filtered["areaName"],
+                # animation_frame=df_filtered["date"],
+                name="COVID-19 Cases",
+            ),
+            row=2, col=2
+        )
+        
+        
+        
+        
+        
+        
+        
         fig.update_yaxes(title_text="Cumulative COVID-19 Cases", row=1, col=1)
         fig.update_yaxes(title_text="New Cases", row=1, col=1, secondary_y=True)
         fig.update_yaxes(title_text="Vaccine Doses", row=2, col=1)
@@ -212,6 +272,7 @@ def graphgen(userLocationsList):
         
         fig.update_layout(title_text="COVID-19 Data")
         fig.update_layout(xaxis_range=[start_date, end_date])
+        # fig.update_geos(scope='europe') 
         fig.show()
         
         
@@ -245,8 +306,19 @@ def graphgen(userLocationsList):
 
 
 
+
+
+
+
+
+
+
 ##### TEST AREA #####
 UserChoice()
+
+
+
+
 if choice == 'l':
     ShowList()
 if choice == 'c':
