@@ -29,8 +29,8 @@ def UserChoice():     # Initial startup question
     """
     global choice
     choice = input(
-          '\nPlease choose what to do:\n  l: Show list of cities\n  c: '
-          'Choose cities\n  q: Quit\n\n» Action: ')
+        '\nPlease choose what to do:\n  l: Show list of cities\n  c: '
+        'Choose cities\n  q: Quit\n\n» Action: ')
     while choice != 'l' and choice != 'c' and choice != 'q':
         print('Error, please enter a valid input')
         choice = input(
@@ -75,8 +75,6 @@ def LocationInput():
     userLocations = userLocations.replace(" ", "|")
     # Splits cities into a list, where the user seperates the cities with commas
     userLocationsList = userLocations.split(",")
-    
-    
 
 
 def timeRange():
@@ -87,11 +85,11 @@ def timeRange():
     df_filtered = df[df['areaName'].str.contains(
         r'\b' + userLocationsList[0] + r'\b')]
     min_value, max_value = df_filtered['date'].min(), df_filtered['date'].max()
-    
+
     # WORK IN PROGRESS - tells the user which locations they have selected. e.g. if 'Bristol' is typed, this will print 'Bristol, City of'
     # currently just repeats the users input
-    print('Analysing data for the following location(s):\n' +  str(userLocationsList))
-    
+    print('Analysing data for the following location(s):\n' + str(userLocationsList))
+
     print('\nPlease select a time range:\n  Possible start date:', min_value,
           '\n  Possible end date:', max_value, '\n\n  Examples:\n  All - '
           'this will display data across the whole time range.\n  YYYY-MM-DD'
@@ -192,17 +190,20 @@ def graphgen(userLocationsList):
                 name="Third Dose"),
             row=2, col=1
         )
-
+        # marker_colors = ['#00CC96', 'AB63FA', 'FFA15A']
+        colors = ['green', 'purple', 'orange']
         fig.add_trace(
-             go.Pie(
-                 labels=['First Dose', 'Second Dose', 'Third Injection'],
-                 values=values,
-                 textinfo='label+percent',
-                 pull=[0, 0, 0],
-              name="Vaccine Doses"
-          ),
-            row=1, col=2
-        )
+            go.Pie(
+                labels=['First Dose', 'Second Dose', 'Third Injection'],
+                values=values,
+                textinfo='label+percent',
+                marker=dict(
+                    colors=colors, line=dict(color='#000000', width=0.2)),
+                pull=[0, 0, 0],
+                name="Vaccine Doses"),
+            row=1, col=2)
+
+        
 
         fig.update_yaxes(title_text="Cumulative COVID-19 Cases", row=1, col=1)
         fig.update_yaxes(title_text="New Cases", row=1,
@@ -243,7 +244,6 @@ def graphgen(userLocationsList):
 UserChoice()
 if choice == 'l':
     ShowList()
-    UserChoice2()
 if choice == 'c':
     LocationInput()
     timeRange()
