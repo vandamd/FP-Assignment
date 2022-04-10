@@ -95,9 +95,6 @@ app.layout = html.Div(children=[
     html.Div(style={'width': '50%', 'display': 'flex'}),
     
     # City Selection Dropdown
-    
-    
-    
     html.Div(
         dcc.Dropdown(
             areaList,
@@ -121,7 +118,7 @@ app.layout = html.Div(children=[
             end_date=date(int(dMax_value[0:4]), int(dMax_value[5:7]), int(dMax_value[8:10])),
             style=style_dict,
         ), 
-        style={'width': '14%', 'display': 'flex', 'vertical-align': 'top', 'margin-left': 'auto', 'margin-right': 'auto', 'flex-direction': 'row'}
+        style={'width': '40%', 'display': 'flex', 'vertical-align': 'top', 'margin-left': 'auto', 'margin-right': 'auto'}
         ),
     
     # dcc.Graph(
