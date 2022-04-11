@@ -118,6 +118,8 @@ app.layout = html.Div(children=[
                 dMin_value[5:7]), int(dMin_value[8:10])),
             max_date_allowed=date(int(dMax_value[0:4]), int(
                 dMax_value[5:7]), int(dMax_value[8:10])),
+            start_date=date(int(dMin_value[0:4]), int(
+                dMin_value[5:7]), int(dMin_value[8:10])),
             end_date=date(int(dMax_value[0:4]), int(
                 dMax_value[5:7]), int(dMax_value[8:10])),
             style=style_dict,
