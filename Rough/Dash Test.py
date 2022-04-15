@@ -20,7 +20,7 @@ import pandas as pd
 
 app = Dash(__name__)
 
-
+# read geojson for choropleth 
 polygons = requests.get(
     "https://gist.githubusercontent.com/duhaime/1d6d5a8dc77c86128fcc1a05a72726c9/raw/8b8522cbc69498b6c4983a9f58c045c2b451cb89/british-isles-counties.geojson"
 ).json()
