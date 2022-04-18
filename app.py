@@ -139,14 +139,21 @@ def update_output(city, start_date, end_date):
         shared_xaxes=True,
         vertical_spacing=0.03,
         column_widths=[1, 1],
-        row_heights=[1, 1, 1, 1],
+        row_heights=[1, 1, 0.5, 1],
         specs=[[{"secondary_y": True, "colspan": 2}, None],
                [{"type": "scatter", "colspan": 2}, None],
                [None, None],
-               [None, None]])
+               [{"type": "pie", "colspan": 2}, None]])
 
     for i in range(N):
         df_filtered = df[df['areaName'].str.contains(r'\b' + city[i] + r'\b')]
+        
+        # Pie Chart Values
+        df_reset = df_filtered.reset_index(drop=True)
+        first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        values = [first_dose_people, second_dose_people, third_dose_people]
 
         # Graph of Cumulative Cases against Time (1)
         fig.add_trace(
@@ -199,6 +206,18 @@ def update_output(city, start_date, end_date):
             ),
             row=2, col=1
         )
+        
+        # Pie Chart of Vaccine Doses
+        fig.add_trace(
+            go.Pie(
+                labels=['First Dose', 'Second Dose', 'Third Injection'],
+                values=values,
+                textinfo='label+percent',
+                marker=dict(
+                   line=dict(color='#000000', width=0.2)),
+                pull=[0, 0, 0],
+                name="Vaccine Doses"),
+            row=4, col=1)
 
 
     # Figure Formatting
