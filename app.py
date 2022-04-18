@@ -1,4 +1,5 @@
 # Misc
+from datetime import date
 from dash import Dash, html, dcc, Input, Output
 import pandas as pd
 
@@ -10,6 +11,9 @@ url = 'https://api.coronavirus.data.gov.uk/v2/data?areaType=utla&metric=cumCases
 
 # Read CSV
 df = pd.read_csv(url)
+
+# Determining the maximum date range - YYYY-MM-DD
+dMin_value, dMax_value = df['date'].min(), df['date'].max()
 
 
 # BUG WITH DASH PLOTLY - Cannot select cities with commas
@@ -32,6 +36,7 @@ df.replace(to_replace="Kingston upon Hull, City of",
 df.replace(to_replace="Newry, Mourne and Down",
            value="Newry and Mourne and Down",
            inplace=True)
+
 
 # City list
 areaList = sorted(list(set(df['areaName'].tolist())))
@@ -56,6 +61,7 @@ style_dict1 = dict(
     textAlign='center',
     fontFamily='HelveticaNeue',
 )
+
 
 # Layout
 app.layout = html.Div(children=[
@@ -84,6 +90,27 @@ app.layout = html.Div(children=[
                'margin-left': 'auto', 'margin-right': 'auto'}
     ),
 
+    # Placeholder
+    html.Div(style={'width': '2%', 'display': 'inline-block',
+             'vertical-align': 'top'}),
+
+    # Date Range Picker
+    html.Div(
+        dcc.DatePickerRange(
+            id='date-range-picker',
+            min_date_allowed=date(int(dMin_value[0:4]), int(
+                dMin_value[5:7]), int(dMin_value[8:10])),
+            max_date_allowed=date(int(dMax_value[0:4]), int(
+                dMax_value[5:7]), int(dMax_value[8:10])),
+            start_date=date(int(dMin_value[0:4]), int(
+                dMin_value[5:7]), int(dMin_value[8:10])),
+            end_date=date(int(dMax_value[0:4]), int(
+                dMax_value[5:7]), int(dMax_value[8:10])),
+            style=style_dict,
+        ),
+        style={'width': '40%', 'display': 'flex', 'vertical-align': 'top',
+               'margin-left': 'auto', 'margin-right': 'auto'}
+    )
 ])
 
 
