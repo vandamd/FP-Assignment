@@ -4,6 +4,8 @@ from dash import Dash, html, dcc, Input, Output
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
+import plotly.express as px
+import requests
 
 app = Dash(__name__)
 
@@ -120,10 +122,21 @@ app.layout = html.Div(children=[
             id='final-graph'
         ),
         style = {'width': '70%', 'align-items': 'center', 'justify-content': 'center', 'margin-left': 'auto', 'margin-right': 'auto'}
+    ),
+    
+    # Output Choropleth Map with loading animation
+    html.Div(
+        dcc.Loading(
+            id="loading-1",
+            children=[dcc.Graph(id="map-graph")],
+            type="circle",
+        ),
+        style = {'width': '40%', 'align-items': 'center', 'justify-content': 'center', 'margin-left': 'auto', 'margin-right': 'auto'}
     )
 ])
 
 ########## Data Inputs and Outputs
+##### Main Graph
 # When City and dates are selected, graph updates with specified values
 @app.callback(
     Output('final-graph', 'figure'),
@@ -261,7 +274,44 @@ def update_output(city, start_date, end_date):
     return fig                                                                 # Show Graph!
 
 
+##### Choropleth Graph
+# Geojson File
+polygons = requests.get(
+    "https://gist.githubusercontent.com/duhaime/1d6d5a8dc77c86128fcc1a05a72726c9/raw/8b8522cbc69498b6c4983a9f58c045c2b451cb89/british-isles-counties.geojson"
+).json()
 
+# Ouput Choropleth graph - doesn't take any inputs currently
+@app.callback(
+    Output('map-graph', 'figure'),
+    Input('date-range-picker', 'start_date'),
+    Input('date-range-picker', 'end_date')
+)
+def update_map(start_date, end_date):
+    df = pd.read_csv(url)
+    df["date2"] = pd.to_datetime(df['date'])
+    df = df[df['date2'].dt.day == 1]
+
+    fig1 = px.choropleth_mapbox(
+        df.iloc[::-1],
+        geojson=polygons,
+        locations='areaName',
+        featureidkey="properties.NAME_2",
+        color='newCasesBySpecimenDate',
+        color_continuous_scale="Reds",
+        range_color=(0, 500),
+        hover_name='areaName',
+        labels={"newCasesBySpecimenDate": "Cases"},
+        animation_frame="date",
+        animation_group="areaCode",
+        center={"lat": 54.768483, "lon": -4.417318},
+        mapbox_style="carto-positron", zoom=5
+    )
+
+    fig1.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig1.update_geos(fitbounds="geojson", visible=False)
+    fig1.update_layout(height=1000, autosize=True)
+    # fig.show()
+    return fig1
 
 
 
