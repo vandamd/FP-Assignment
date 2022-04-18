@@ -2,6 +2,8 @@
 from datetime import date
 from dash import Dash, html, dcc, Input, Output
 import pandas as pd
+from plotly.subplots import make_subplots
+import plotly.graph_objs as go
 
 app = Dash(__name__)
 
@@ -110,8 +112,109 @@ app.layout = html.Div(children=[
         ),
         style={'width': '40%', 'display': 'flex', 'vertical-align': 'top',
                'margin-left': 'auto', 'margin-right': 'auto'}
+    ),
+    
+    # Output Main Graph
+    html.Div(
+        dcc.Graph(
+            id='final-graph'
+        ),
+        style = {'width': '70%', 'align-items': 'center', 'justify-content': 'center', 'margin-left': 'auto', 'margin-right': 'auto'}
     )
 ])
+
+########## Data Inputs and Outputs
+# When City and dates are selected, graph updates with specified values
+@app.callback(
+    Output('final-graph', 'figure'),
+    Input('city-dropdown', 'value'),
+    Input('date-range-picker', 'start_date'),
+    Input('date-range-picker', 'end_date')
+)
+def update_output(city, start_date, end_date):
+    N = len(city)
+    
+    fig = make_subplots(
+        rows=4, cols=2,
+        shared_xaxes=True,
+        vertical_spacing=0.03,
+        column_widths=[1, 1],
+        row_heights=[1, 1, 1, 1],
+        specs=[[{"secondary_y": True, "colspan": 2}, None],
+               [{"type": "scatter", "colspan": 2}, None],
+               [None, None],
+               [None, None]])
+
+    for i in range(N):
+        df_filtered = df[df['areaName'].str.contains(r'\b' + city[i] + r'\b')]
+
+        # Graph of Cumulative Cases against Time (1)
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"],
+                y=df_filtered['cumCasesBySpecimenDate'],
+                mode="lines",
+                name="Total Cases for " + str(city[i])
+            ),
+            row=1, col=1
+        )
+        
+        # Graph of New Cases against Time - on top of (1)
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"],
+                y=df_filtered['newCasesBySpecimenDate'],
+                name="New Cases for " + str(city[i])),
+            secondary_y=True,
+            row=1, col=1
+        )
+
+        # Graph of First Vaccine Doses against Time
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"],
+                y=df_filtered['cumPeopleVaccinatedFirstDoseByVaccinationDate'],
+                mode="lines",
+                name="First Dose for " + str(city[i])
+            ),
+            row=2, col=1
+        )
+
+        # Graph of Second Vaccine Doses against Time
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"],
+                y=df_filtered['cumPeopleVaccinatedSecondDoseByVaccinationDate'],
+                name="Second Dose for " + str(city[i])
+            ),
+            row=2, col=1
+        )
+
+        # Graph of Third Vaccine Doses against Time
+        fig.add_trace(
+            go.Scatter(
+                x=df_filtered["date"],
+                y=df_filtered['cumPeopleVaccinatedThirdInjectionByVaccinationDate'],
+                name="Third Dose for " + str(city[i])
+            ),
+            row=2, col=1
+        )
+
+    # Figure Formatting
+    fig.update_yaxes(title_text="Cumulative COVID-19 Cases", row=1, col=1)     # Title of Left Y-Axis of Cases Graph
+    fig.update_yaxes(title_text="New Cases", row=1, col=1, secondary_y=True)   # Title of Right Y-Axis of Cases Graph
+    fig.update_yaxes(title_text="Vaccine Doses", row=2, col=1)                 # Title of Y-Axis of Vaccine Graph
+    fig.update_xaxes(title_text="Date", row=2, col=1)                          # Title of X-Axis of Vaccine Graphs
+    fig.update_xaxes(matches='x')                                              # Allows Cases and Vaccine Graph to zoom together
+    fig.update_layout(height=1000, autosize=True)                              # Height of the Final Graph
+    fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
+    
+    return fig                                                                 # Show Graph!
+
+
+
+
+
 
 
 if __name__ == '__main__':
