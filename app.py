@@ -85,7 +85,7 @@ app.layout = html.Div(children=[
     html.Div(
         dcc.Dropdown(
             areaList,
-            ['Bristol'],
+            ['Bristol', 'Hackney and City of London'],
             id='city-dropdown',
             multi=True,
             style=style_dict,
@@ -159,8 +159,17 @@ def update_output(city, start_date, end_date):
         specs=[[{"secondary_y": True, "colspan": 2}, None],
                [{"type": "scatter", "colspan": 2}, None],
                [None, None],
-               [{"type": "pie", "colspan": 2}, None]])
-
+               [{"type": "pie"}, {"type": "pie"}]])
+    
+    # Values for Second Pie Chart if there are two selected cities
+    if N == 2:
+        df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
+        df_reset2 = df_city2.reset_index(drop=True)
+        first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
+    
     for i in range(N):
         df_filtered = df[df['areaName'].str.contains(r'\b' + city[i] + r'\b')]
         
@@ -234,6 +243,19 @@ def update_output(city, start_date, end_date):
                 pull=[0, 0, 0],
                 name="Vaccine Doses"),
             row=4, col=1)
+
+        # Second Pie Chart of Vaccine Doses
+        if N == 2:
+            fig.add_trace(
+                go.Pie(
+                    labels=['First Dose', 'Second Dose', 'Third Injection'],
+                    values=values2,
+                    textinfo='label+percent',
+                    marker=dict(
+                       colors=colors, line=dict(color='#000000', width=0.2)),
+                    pull=[0, 0, 0],
+                    name="Vaccine Doses",),
+                row=4, col=2)
 
 
     # Figure Formatting
