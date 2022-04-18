@@ -200,6 +200,7 @@ def update_output(city, start_date, end_date):
             row=2, col=1
         )
 
+
     # Figure Formatting
     fig.update_yaxes(title_text="Cumulative COVID-19 Cases", row=1, col=1)     # Title of Left Y-Axis of Cases Graph
     fig.update_yaxes(title_text="New Cases", row=1, col=1, secondary_y=True)   # Title of Right Y-Axis of Cases Graph
@@ -207,8 +208,34 @@ def update_output(city, start_date, end_date):
     fig.update_xaxes(title_text="Date", row=2, col=1)                          # Title of X-Axis of Vaccine Graphs
     fig.update_xaxes(matches='x')                                              # Allows Cases and Vaccine Graph to zoom together
     fig.update_layout(height=1000, autosize=True)                              # Height of the Final Graph
+    fig.update_layout(xaxis1_rangeslider_visible=False)                        # Hides Range Slider for Cases Graph
+    fig.update_xaxes(rangeslider_thickness = 0.05)                             # Makes Range Slider Shorter
     fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
     
+    # Range Slider and Buttons
+    fig.update_layout(
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list(
+                    [
+                        dict(count=1, label="1m", step="month",
+                             stepmode="backward"),
+                        dict(count=6, label="6m", step="month",
+                             stepmode="backward"),
+                        dict(count=1, label="1y", step="year",
+                             stepmode="backward"),
+                        dict(step="all"),
+                    ]
+                )
+            ),
+            type="date",
+        ),
+        xaxis2=dict(
+            rangeslider=dict(visible=True),
+            type="date",
+        )
+    )
+             
     return fig                                                                 # Show Graph!
 
 
