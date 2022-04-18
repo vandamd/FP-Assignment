@@ -134,12 +134,15 @@ app.layout = html.Div(children=[
 def update_output(city, start_date, end_date):
     N = len(city)
     
+    colors = ['green', 'purple', 'orange']
+    
     fig = make_subplots(
         rows=4, cols=2,
         shared_xaxes=True,
-        vertical_spacing=0.03,
+        vertical_spacing=0.08,
         column_widths=[1, 1],
         row_heights=[1, 1, 0.5, 1],
+        subplot_titles=("COVID-19 Cases", "Vaccine Doses", "Vaccine Doses Percentage"),
         specs=[[{"secondary_y": True, "colspan": 2}, None],
                [{"type": "scatter", "colspan": 2}, None],
                [None, None],
@@ -214,7 +217,7 @@ def update_output(city, start_date, end_date):
                 values=values,
                 textinfo='label+percent',
                 marker=dict(
-                   line=dict(color='#000000', width=0.2)),
+                   colors=colors,line=dict(color='#000000', width=0.2)),
                 pull=[0, 0, 0],
                 name="Vaccine Doses"),
             row=4, col=1)
