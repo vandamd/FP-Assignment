@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 import plotly.express as px
 import requests
+import json
 
 app = Dash(__name__)
 
@@ -298,9 +299,9 @@ def update_output(city, start_date, end_date):
 
 ##### Choropleth Graph
 # Geojson File
-polygons = requests.get(
-    "https://gist.githubusercontent.com/duhaime/1d6d5a8dc77c86128fcc1a05a72726c9/raw/8b8522cbc69498b6c4983a9f58c045c2b451cb89/british-isles-counties.geojson"
-).json()
+polygons_path = 'Counties_and_Unitary_Authorities_(December_2021)_UK_BUC.geojson'
+with open(polygons_path) as p:
+    polygons = json.load(p)
 
 # Ouput Choropleth graph - doesn't take any inputs currently
 @app.callback(
@@ -316,8 +317,8 @@ def update_map(start_date, end_date):
     fig1 = px.choropleth_mapbox(
         df.iloc[::-1],
         geojson=polygons,
-        locations='areaName',
-        featureidkey="properties.NAME_2",
+        locations='areaCode',
+        featureidkey="properties.CTYUA21CD",
         color='newCasesBySpecimenDate',
         color_continuous_scale="Reds",
         range_color=(0, 500),
