@@ -163,50 +163,10 @@ def update_output(city, start_date, end_date):
                [None, None],
                [{"type": "pie"}, {"type": "pie"}]])
     
-    # Values for Second Pie Chart if there are two selected cities
-    if N == 2:
-        df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
-        df_reset2 = df_city2.reset_index(drop=True)
-        first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
-        second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
-        third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
-        values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
     
     for i in range(N):
         df_filtered = df[df['areaName'].str.contains(r'\b' + city[i] + r'\b')]
         
-        # Pie Chart Values
-        df_reset = df_filtered.reset_index(drop=True)
-        first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
-        second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
-        third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
-        values = [first_dose_people, second_dose_people, third_dose_people]
-
-  # Pie Chart of Vaccine Doses
-        fig.add_trace(
-            go.Pie(
-                labels=['First Dose', 'Second Dose', 'Third Injection'],
-                values=values,
-                textinfo='label+percent',
-                marker=dict(
-                   colors=colors1,line=dict(color='#000000', width=0.2)),
-                pull=[0, 0, 0],
-                name="Vaccine Doses"),
-            row=4, col=1)
-
-
-        # Second Pie Chart of Vaccine Doses
-        if N == 2:
-            fig.add_trace(
-                go.Pie(
-                    labels=['First Dose', 'Second Dose', 'Third Injection'],
-                    values=values2,
-                    textinfo='label+percent',
-                    marker=dict(
-                       colors=colors2, line=dict(color='#000000', width=0.2)),
-                    pull=[0, 0, 0],
-                    name="Vaccine Doses",),
-                row=4, col=2)
             
         # Graph of Cumulative Cases against Time (1)
         fig.add_trace(
@@ -259,6 +219,45 @@ def update_output(city, start_date, end_date):
             ),
             row=2, col=1
         )
+    
+    # 1st Pie Chart Values   
+        df_filtered = df[df['areaName'].str.contains(r'\b' + city[0] + r'\b')]
+        df_reset = df_filtered.reset_index(drop=True)
+        first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        values = [first_dose_people, second_dose_people, third_dose_people]
+    
+      # Pie Chart of Vaccine Doses
+        
+        fig.add_trace(
+                  go.Pie(
+                      labels=['First Dose', 'Second Dose', 'Third Injection'],
+                      values=values,
+                      textinfo='label+percent',
+                      marker=dict(
+                          colors=colors1,line=dict(color='#000000', width=0.2)),
+                      pull=[0, 0, 0],
+                      name="Vaccine Doses"),
+                  row=4, col=1)
+        # 2nd Pie Chart
+        if N==2:   
+            df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
+            df_reset2 = df_city2.reset_index(drop=True)
+            first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+            second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+            third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+            values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
+            fig.add_trace(
+                go.Pie(
+                    labels=['First Dose', 'Second Dose', 'Third Injection'],
+                    values=values2,
+                    textinfo='label+percent',
+                    marker=dict(
+                        colors=colors2,line=dict(color='#000000', width=0.2)),
+                    pull=[0, 0, 0],
+                    name="Vaccine Doses"),
+                row=4, col=2)
 
 
     # Figure Formatting
