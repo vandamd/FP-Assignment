@@ -195,7 +195,7 @@ def update_output(city, start_date, end_date):
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedFirstDoseByVaccinationDate'],
                 mode="lines",
-                name="First Dose for " + str(city[i])
+                name="1st Dose for " + str(city[i])
             ),
             row=2, col=1
         )
@@ -205,7 +205,7 @@ def update_output(city, start_date, end_date):
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedSecondDoseByVaccinationDate'],
-                name="Second Dose for " + str(city[i])
+                name="2nd Dose for " + str(city[i])
             ),
             row=2, col=1
         )
@@ -215,7 +215,7 @@ def update_output(city, start_date, end_date):
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedThirdInjectionByVaccinationDate'],
-                name="Third Dose for " + str(city[i])
+                name="3rd Dose for " + str(city[i])
             ),
             row=2, col=1
         )
@@ -271,6 +271,7 @@ def update_output(city, start_date, end_date):
     fig.update_xaxes(rangeslider_thickness = 0.05)                             # Makes Range Slider Shorter
     fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
     fig.update_layout(hovermode="x unified")
+    fig.update_layout(hoverlabel_namelength=-1)
     
     # Range Slider and Buttons
     fig.update_layout(
