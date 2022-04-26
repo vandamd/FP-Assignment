@@ -25,8 +25,6 @@ click==8.1.2
 cloudpickle==2.0.0
 colorama==0.4.4
 coloredlogs==15.0.1
-conda==4.12.0
-conda-package-handling==1.8.1
 cookiecutter==1.7.3
 cryptography==36.0.0
 dash==2.0.0
