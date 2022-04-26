@@ -248,11 +248,19 @@ def update_output(city, start_date, end_date):
                       values=values,
                       textinfo='label+percent',
                       marker=dict(
+<<<<<<< HEAD
                           colors=colorsPie1,line=dict(color='#000000', width=0.2)),
                       pull=[0, 0, 0],
                       name="Vaccine Doses"),
                   row=4, col=1)
      # 2nd Pie Chart Value
+=======
+                          colors=colors1,line=dict(color='#000000', width=0.2)),
+                      pull=[0, 0, 0],
+                      name="Vaccine Doses"),
+                  row=4, col=1)
+        # 2nd Pie Chart
+>>>>>>> dc0be96087e56b1728101f36465e0e4abf2ce4d1
         if N==2:   
             df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
             df_reset2 = df_city2.reset_index(drop=True)
@@ -266,7 +274,11 @@ def update_output(city, start_date, end_date):
                     values=values2,
                     textinfo='label+percent',
                     marker=dict(
+<<<<<<< HEAD
                         colors=colorsPie2,line=dict(color='#000000', width=0.2)),
+=======
+                        colors=colors2,line=dict(color='#000000', width=0.2)),
+>>>>>>> dc0be96087e56b1728101f36465e0e4abf2ce4d1
                     pull=[0, 0, 0],
                     name="Vaccine Doses"),
                 row=4, col=2)
