@@ -250,7 +250,8 @@ def update_output(city, start_date, end_date):
                       marker=dict(
                           colors=colorsPie1,line=dict(color='#000000', width=0.2)),
                       pull=[0, 0, 0],
-                      name="Vaccine Doses"),
+                      name="Vaccine Doses",
+                      showlegend = False),
                   row=4, col=1)
      # 2nd Pie Chart Value
         if N==2:   
@@ -268,7 +269,8 @@ def update_output(city, start_date, end_date):
                     marker=dict(
                         colors=colorsPie2,line=dict(color='#000000', width=0.2)),
                     pull=[0, 0, 0],
-                    name="Vaccine Doses"),
+                    name="Vaccine Doses",
+                    showlegend = False),
                 row=4, col=2)
 
 
@@ -282,7 +284,8 @@ def update_output(city, start_date, end_date):
     fig.update_layout(xaxis1_rangeslider_visible=False)                        # Hides Range Slider for Cases Graph
     fig.update_xaxes(rangeslider_thickness = 0.05)                             # Makes Range Slider Shorter
     fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
-    fig.update_layout(hovermode="x unified")
+    fig.update_layout(hovermode="x unified")                                   # Hover Label
+    fig.update_layout(hoverlabel_namelength=-1)                                # Prevents abbreviation of Hover Label
     
     # Range Slider and Buttons
     fig.update_layout(
