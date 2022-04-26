@@ -148,7 +148,8 @@ app.layout = html.Div(children=[
 def update_output(city, start_date, end_date):
     N = len(city)
     
-    colors = ['green', 'purple', 'orange']
+    colors1 = ['navy', 'dodgerblue', 'deepskyblue']
+    colors2 = ['darkgreen', 'green','lawngreen']
     
     fig = make_subplots(
         rows=4, cols=2,
@@ -181,6 +182,32 @@ def update_output(city, start_date, end_date):
         third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
         values = [first_dose_people, second_dose_people, third_dose_people]
 
+  # Pie Chart of Vaccine Doses
+        fig.add_trace(
+            go.Pie(
+                labels=['First Dose', 'Second Dose', 'Third Injection'],
+                values=values,
+                textinfo='label+percent',
+                marker=dict(
+                   colors=colors1,line=dict(color='#000000', width=0.2)),
+                pull=[0, 0, 0],
+                name="Vaccine Doses"),
+            row=4, col=1)
+
+
+        # Second Pie Chart of Vaccine Doses
+        if N == 2:
+            fig.add_trace(
+                go.Pie(
+                    labels=['First Dose', 'Second Dose', 'Third Injection'],
+                    values=values2,
+                    textinfo='label+percent',
+                    marker=dict(
+                       colors=colors2, line=dict(color='#000000', width=0.2)),
+                    pull=[0, 0, 0],
+                    name="Vaccine Doses",),
+                row=4, col=2)
+            
         # Graph of Cumulative Cases against Time (1)
         fig.add_trace(
             go.Scatter(
@@ -232,31 +259,6 @@ def update_output(city, start_date, end_date):
             ),
             row=2, col=1
         )
-        
-        # Pie Chart of Vaccine Doses
-        fig.add_trace(
-            go.Pie(
-                labels=['First Dose', 'Second Dose', 'Third Injection'],
-                values=values,
-                textinfo='label+percent',
-                marker=dict(
-                   colors=colors,line=dict(color='#000000', width=0.2)),
-                pull=[0, 0, 0],
-                name="Vaccine Doses"),
-            row=4, col=1)
-
-        # Second Pie Chart of Vaccine Doses
-        if N == 2:
-            fig.add_trace(
-                go.Pie(
-                    labels=['First Dose', 'Second Dose', 'Third Injection'],
-                    values=values2,
-                    textinfo='label+percent',
-                    marker=dict(
-                       colors=colors, line=dict(color='#000000', width=0.2)),
-                    pull=[0, 0, 0],
-                    name="Vaccine Doses",),
-                row=4, col=2)
 
 
     # Figure Formatting
