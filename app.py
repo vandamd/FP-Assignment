@@ -145,11 +145,18 @@ app.layout = html.Div(children=[
     Input('date-range-picker', 'start_date'),
     Input('date-range-picker', 'end_date')
 )
+
+
 def update_output(city, start_date, end_date):
     N = len(city)
     
-    colors1 = ['navy', 'dodgerblue', 'deepskyblue']
-    colors2 = ['darkgreen', 'green','lawngreen']
+    colorsTotalCases = ['#ff002b', '#0077b6']        #light     red-blue
+    colorsNewCases =  ['#c00021', '#023e8a']         #dark      red-blue
+    colorsVacc1 = ['#ff6000', '#004b23']             #dark      orange-green
+    colorsVacc2 = ['#ff7900', '#38b000']             #mid       orange-green
+    colorsVacc3 = ['#ffd000', '#9ef01a']             #light     orange-green
+    colorsPie1 = ['#ff6000', '#ff7900', '#ffd000']   #orange    dark-light
+    colorsPie2 = ['#004b23', '#38b000','#9ef01a']    #green     dark-light
     
     fig = make_subplots(
         rows=4, cols=2,
@@ -163,50 +170,10 @@ def update_output(city, start_date, end_date):
                [None, None],
                [{"type": "pie"}, {"type": "pie"}]])
     
-    # Values for Second Pie Chart if there are two selected cities
-    if N == 2:
-        df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
-        df_reset2 = df_city2.reset_index(drop=True)
-        first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
-        second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
-        third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
-        values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
     
     for i in range(N):
         df_filtered = df[df['areaName'].str.contains(r'\b' + city[i] + r'\b')]
         
-        # Pie Chart Values
-        df_reset = df_filtered.reset_index(drop=True)
-        first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
-        second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
-        third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
-        values = [first_dose_people, second_dose_people, third_dose_people]
-
-  # Pie Chart of Vaccine Doses
-        fig.add_trace(
-            go.Pie(
-                labels=['First Dose', 'Second Dose', 'Third Injection'],
-                values=values,
-                textinfo='label+percent',
-                marker=dict(
-                   colors=colors1,line=dict(color='#000000', width=0.2)),
-                pull=[0, 0, 0],
-                name="Vaccine Doses"),
-            row=4, col=1)
-
-
-        # Second Pie Chart of Vaccine Doses
-        if N == 2:
-            fig.add_trace(
-                go.Pie(
-                    labels=['First Dose', 'Second Dose', 'Third Injection'],
-                    values=values2,
-                    textinfo='label+percent',
-                    marker=dict(
-                       colors=colors2, line=dict(color='#000000', width=0.2)),
-                    pull=[0, 0, 0],
-                    name="Vaccine Doses",),
-                row=4, col=2)
             
         # Graph of Cumulative Cases against Time (1)
         fig.add_trace(
@@ -214,7 +181,8 @@ def update_output(city, start_date, end_date):
                 x=df_filtered["date"],
                 y=df_filtered['cumCasesBySpecimenDate'],
                 mode="lines",
-                name="Total Cases for " + str(city[i])
+                name="Total Cases for " + str(city[i]),
+                line=dict(color=colorsTotalCases[i])
             ),
             row=1, col=1
         )
@@ -224,7 +192,8 @@ def update_output(city, start_date, end_date):
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['newCasesBySpecimenDate'],
-                name="New Cases for " + str(city[i])),
+                name="New Cases for " + str(city[i]),
+                line=dict(color=colorsNewCases[i])),
             secondary_y=True,
             row=1, col=1
         )
@@ -235,7 +204,8 @@ def update_output(city, start_date, end_date):
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedFirstDoseByVaccinationDate'],
                 mode="lines",
-                name="First Dose for " + str(city[i])
+                name="First Dose for " + str(city[i]),
+                line=dict(color=colorsVacc1[i])
             ),
             row=2, col=1
         )
@@ -245,7 +215,8 @@ def update_output(city, start_date, end_date):
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedSecondDoseByVaccinationDate'],
-                name="Second Dose for " + str(city[i])
+                name="Second Dose for " + str(city[i]),
+                line=dict(color=colorsVacc2[i])
             ),
             row=2, col=1
         )
@@ -255,10 +226,50 @@ def update_output(city, start_date, end_date):
             go.Scatter(
                 x=df_filtered["date"],
                 y=df_filtered['cumPeopleVaccinatedThirdInjectionByVaccinationDate'],
-                name="Third Dose for " + str(city[i])
+                name="Third Dose for " + str(city[i]),
+                line=dict(color=colorsVacc3[i])
             ),
             row=2, col=1
         )
+    
+    # 1st Pie Chart Values   
+        df_filtered = df[df['areaName'].str.contains(r'\b' + city[0] + r'\b')]
+        df_reset = df_filtered.reset_index(drop=True)
+        first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+        second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+        third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        values = [first_dose_people, second_dose_people, third_dose_people]
+    
+      # Pie Chart of Vaccine Doses
+        
+        fig.add_trace(
+                  go.Pie(
+                      labels=['First Dose', 'Second Dose', 'Third Injection'],
+                      values=values,
+                      textinfo='label+percent',
+                      marker=dict(
+                          colors=colorsPie1,line=dict(color='#000000', width=0.2)),
+                      pull=[0, 0, 0],
+                      name="Vaccine Doses"),
+                  row=4, col=1)
+     # 2nd Pie Chart Value
+        if N==2:   
+            df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
+            df_reset2 = df_city2.reset_index(drop=True)
+            first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
+            second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
+            third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+            values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
+            fig.add_trace(
+                go.Pie(
+                    labels=['First Dose', 'Second Dose', 'Third Injection'],
+                    values=values2,
+                    textinfo='label+percent',
+                    marker=dict(
+                        colors=colorsPie2,line=dict(color='#000000', width=0.2)),
+                    pull=[0, 0, 0],
+                    name="Vaccine Doses"),
+                row=4, col=2)
 
 
     # Figure Formatting
@@ -271,6 +282,7 @@ def update_output(city, start_date, end_date):
     fig.update_layout(xaxis1_rangeslider_visible=False)                        # Hides Range Slider for Cases Graph
     fig.update_xaxes(rangeslider_thickness = 0.05)                             # Makes Range Slider Shorter
     fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
+    fig.update_layout(hovermode="x unified")
     
     # Range Slider and Buttons
     fig.update_layout(
