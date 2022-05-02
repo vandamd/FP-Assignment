@@ -346,7 +346,7 @@ def update_map(start_date, end_date):
         featureidkey="properties.CTYUA21CD",
         color='newCasesBySpecimenDate',
         color_continuous_scale="Reds",
-        range_color=(0, 500),
+        range_color=(0, 800),
         hover_name='areaName',
         labels={"newCasesBySpecimenDate": "Cases"},
         animation_frame="date",
