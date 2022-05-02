@@ -24,7 +24,6 @@ df = pd.read_csv(url)
 # Determining the maximum date range - YYYY-MM-DD
 dMin_value, dMax_value = df['date'].min(), df['date'].max()
 
-
 # BUG WITH DASH PLOTLY - Cannot select cities with commas
 # Renaming the cities with commas
 df.replace(to_replace="Armagh City, Banbridge and Craigavon",
@@ -103,7 +102,7 @@ app.layout = html.Div(children=[
     html.Div(style={'width': '2%', 'display': 'inline-block',
              'vertical-align': 'top'}),
 
-    # Date Range Picker
+    # Date Range Picker 
     html.Div(
         dcc.DatePickerRange(
             id='date-range-picker',
@@ -155,12 +154,15 @@ def update_output(city, start_date, end_date):
     N = len(city)
     
     colorsTotalCases = ['#ff002b', '#0077b6']        #light     red-blue
-    colorsNewCases =  ['#c00021', '#023e8a']         #dark      red-blue
+    colorsNewCases =  ['#8c0000', '#023e8a']         #dark      red-blue
     colorsVacc1 = ['#ff6000', '#004b23']             #dark      orange-green
     colorsVacc2 = ['#ff7900', '#38b000']             #mid       orange-green
     colorsVacc3 = ['#ffd000', '#9ef01a']             #light     orange-green
     colorsPie1 = ['#ff6000', '#ff7900', '#ffd000']   #orange    dark-light
     colorsPie2 = ['#004b23', '#38b000','#9ef01a']    #green     dark-light
+    
+    df_filtered = df[df['areaName'].str.contains(r'\b' + city[0] + r'\b')]
+    df_reset = df_filtered.reset_index(drop=True)
     
     fig = make_subplots(
         rows=4, cols=2,
@@ -237,15 +239,15 @@ def update_output(city, start_date, end_date):
         )
     
     # 1st Pie Chart Values   
-        df_filtered = df[df['areaName'].str.contains(r'\b' + city[0] + r'\b')]
-        df_reset = df_filtered.reset_index(drop=True)
         first_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
         second_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
         third_dose_people = df_reset.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
+        
         values = [first_dose_people, second_dose_people, third_dose_people]
     
+    
+    
       # Pie Chart of Vaccine Doses
-        
         fig.add_trace(
                   go.Pie(
                       labels=['First Dose', 'Second Dose', 'Third Injection'],
@@ -257,10 +259,13 @@ def update_output(city, start_date, end_date):
                       name="Vaccine Doses",
                       showlegend = False),
                   row=4, col=1)
+
+
      # 2nd Pie Chart Value
         if N==2:   
             df_city2 = df[df['areaName'].str.contains(r'\b' + city[1] + r'\b')]
             df_reset2 = df_city2.reset_index(drop=True)
+            
             first_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedFirstDoseByVaccinationDate']
             second_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedSecondDoseByVaccinationDate']
             third_dose_people2 = df_reset2.loc[0, 'cumPeopleVaccinatedThirdInjectionByVaccinationDate']
@@ -314,13 +319,12 @@ def update_output(city, start_date, end_date):
             type="date",
         )
     )
-             
     return fig                                                                 # Show Graph!
 
 
 ##### Choropleth Graph
 # Geojson File
-polygons_path = 'Counties_and_Unitary_Authorities_(December_2021)_UK_BUC.geojson'
+polygons_path = 'UK.geojson'
 with open(polygons_path) as p:
     polygons = json.load(p)
 
