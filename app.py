@@ -97,6 +97,9 @@ app.layout = html.Div(children=[
         style={'width': '40%', 'display': 'flex', 'vertical-align': 'top',
                'margin-left': 'auto', 'margin-right': 'auto'}
     ),
+    
+    # Alert for picking more than 2 cities
+    html.Div(id='output', style=dict(textAlign='center', color = "red")),
 
     # Placeholder
     html.Div(style={'width': '2%', 'display': 'inline-block',
@@ -362,7 +365,19 @@ def update_map(start_date, end_date):
     return fig1
 
 
+@app.callback(Output('output', 'children'),
+              [Input('city-dropdown', 'value')])
+def process_selected(values):
+    message = ''
+    if len(values) > 2:
+        message = 'A maximum of two items can be selected please de-select some '
+    # output = 'You selected ' + ', '.join(str(v) for v in values[:4])
+    return html.Div([
+        message,
+        html.Br(),
+        # output
+        ])
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
