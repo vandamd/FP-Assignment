@@ -54,7 +54,7 @@ areaList = sorted(list(set(df['areaName'].tolist())))
 
 ########## Page Formatting
 # Formatting style for City and Date Input
-style_dict = dict(width='100%',
+style_dict1 = dict(width='100%',
                   # border='1.5px black solid',
                   height='50px',
                   # textAlign='center',
@@ -63,27 +63,37 @@ style_dict = dict(width='100%',
 
 
 # Formatting for Header and Description
-style_dict1 = dict(
+style_dict2 = dict(
     # border='1.5px black solid',
     # height='50px',
     textAlign='center',
     fontFamily='HelveticaNeue',
 )
 
+style_dict3 = dict(
+    # border='1.5px black solid',
+    # height='50px',
+    textAlign='center',
+    fontSize=20,
+    fontFamily='HelveticaNeue',
+)
+
 
 # Layout
 app.layout = html.Div(children=[
-    html.H1(children='COVID-19 Data', style=style_dict1),
+    html.H1(children='COVID-19 Data', style=style_dict2),
 
+    # Note
     html.Div(children='A web application for COVID-19 Data using Dash Plotly.'
              ' Made by Bayan, Elias, Margherita and Vandam.',
-             style=style_dict1),
+             style=style_dict3),
+    
+    # Note
+    html.Div(children='Note: Not all cities have data for Vaccine Doses.',
+             style=style_dict3),
 
-    # Placeholder
-    html.Div(style={'width': '2%', 'display': 'inline-block'}),
-
-    # Placeholder
-    html.Div(style={'width': '50%', 'display': 'flex'}),
+    # Alert for picking more than 2 cities
+    html.Div(id='output', style=dict(textAlign='center', color = "red")),
 
     # City Selection Dropdown
     html.Div(
@@ -92,14 +102,11 @@ app.layout = html.Div(children=[
             ['Bristol', 'Hackney and City of London'],
             id='city-dropdown',
             multi=True,
-            style=style_dict,
+            style=style_dict1,
         ),
         style={'width': '40%', 'display': 'flex', 'vertical-align': 'top',
                'margin-left': 'auto', 'margin-right': 'auto'}
     ),
-    
-    # Alert for picking more than 2 cities
-    html.Div(id='output', style=dict(textAlign='center', color = "red")),
 
     # Placeholder
     html.Div(style={'width': '2%', 'display': 'inline-block',
@@ -117,7 +124,7 @@ app.layout = html.Div(children=[
                 dMin_value[5:7]), int(dMin_value[8:10])),
             end_date=date(int(dMax_value[0:4]), int(
                 dMax_value[5:7]), int(dMax_value[8:10])),
-            style=style_dict,
+            style=style_dict1,
         ),
         style={'width': '40%', 'display': 'flex', 'vertical-align': 'top',
                'margin-left': 'auto', 'margin-right': 'auto'}
@@ -172,8 +179,8 @@ def update_output(city, start_date, end_date):
         shared_xaxes=True,
         vertical_spacing=0.08,
         column_widths=[1, 1],
-        row_heights=[1, 1, 0.5, 1],
-        subplot_titles=("COVID-19 Cases", "Vaccine Doses", "Vaccine Doses Percentage"),
+        row_heights=[1, 1, 0.1, 2],
+        subplot_titles=("COVID-19 Cases", "Vaccine Doses"),
         specs=[[{"secondary_y": True, "colspan": 2}, None],
                [{"type": "scatter", "colspan": 2}, None],
                [None, None],
@@ -253,14 +260,15 @@ def update_output(city, start_date, end_date):
       # Pie Chart of Vaccine Doses
         fig.add_trace(
                   go.Pie(
+                      title = 'Vaccine Doses in '+ city[0],
                       labels=['First Dose', 'Second Dose', 'Third Injection'],
                       values=values,
                       textinfo='label+percent',
                       marker=dict(
                           colors=colorsPie1,line=dict(color='#000000', width=0.2)),
                       pull=[0, 0, 0],
-                      name="Vaccine Doses",
-                      showlegend = False),
+                      # name="Vaccine Doses",
+                      showlegend = False,),
                   row=4, col=1)
 
 
@@ -275,6 +283,7 @@ def update_output(city, start_date, end_date):
             values2 = [first_dose_people2, second_dose_people2, third_dose_people2]
             fig.add_trace(
                 go.Pie(
+                    title = 'Vaccine Doses in '+ city[1],
                     labels=['First Dose', 'Second Dose', 'Third Injection'],
                     values=values2,
                     textinfo='label+percent',
@@ -289,7 +298,7 @@ def update_output(city, start_date, end_date):
     # Figure Formatting
     fig.update_yaxes(title_text="Cumulative COVID-19 Cases", row=1, col=1)     # Title of Left Y-Axis of Cases Graph
     fig.update_yaxes(title_text="New Cases", row=1, col=1, secondary_y=True)   # Title of Right Y-Axis of Cases Graph
-    fig.update_yaxes(title_text="Vaccine Doses", row=2, col=1)                 # Title of Y-Axis of Vaccine Graph
+    # fig.update_yaxes(title_text="Vaccine Doses", row=2, col=1)                 # Title of Y-Axis of Vaccine Graph
     fig.update_xaxes(title_text="Date", row=2, col=1)                          # Title of X-Axis of Vaccine Graphs
     fig.update_xaxes(matches='x')                                              # Allows Cases and Vaccine Graph to zoom together
     fig.update_layout(height=1000, autosize=True)                              # Height of the Final Graph
