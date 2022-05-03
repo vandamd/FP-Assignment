@@ -19,7 +19,7 @@ Install Packages
 - For Pip Users
 
   ```ssh
-  pip install -r requirements.txt
+  pip install -r dash pandas plotly requests
   ```
 
 - For Anaconda Users
