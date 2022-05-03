@@ -1,6 +1,6 @@
 # Further Computer Programming Assignment
 
-A web application that displays COVID-19 data across the United Kingdom. This uses data from <a href="https://coronavirus.data.gov.uk/">gov.uk</a>.
+A web application that displays COVID-19 data across the United Kingdom. This uses data from <a href="https://coronavirus.data.gov.uk/">gov.uk</a> and is built with <a href="https://plotly.com/dash/">Dash Plotly</a> .
 
 
 ## Usage
@@ -19,7 +19,7 @@ Install Packages
 - For Pip Users
 
   ```ssh
-  pip install -r dash pandas plotly requests
+  pip install dash pandas plotly requests
   ```
 
 - For Anaconda Users
