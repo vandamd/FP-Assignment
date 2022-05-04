@@ -26,7 +26,7 @@ Install Packages
 - For Anaconda Users
 
   ```ssh
-  conda install dash pandas plotly requests
+  conda install -c anaconda dash pandas plotly requests
   ```
 
 Run the web application locally:
