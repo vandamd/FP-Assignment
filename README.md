@@ -20,13 +20,15 @@ Install Packages
 - For Pip Users
 
   ```ssh
-  pip install dash pandas plotly requests
+  pip install -r requirements.txt
   ```
 
 - For Anaconda Users
 
   ```ssh
-  conda install -c anaconda dash pandas plotly requests
+  conda install -c conda-forge dash
+  conda install -c plotly plotly
+  conda install -c anaconda pandas requests
   ```
 
 Run the web application locally:
