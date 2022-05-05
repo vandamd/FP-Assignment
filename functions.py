@@ -38,7 +38,7 @@ def showCV (city, start_date, end_date):
     fig = make_subplots(
         rows=2, cols=2,
         shared_xaxes=True,
-        vertical_spacing=0.1,
+        vertical_spacing=0.2,
         column_widths=[1, 1],
         row_heights=[1, 1],
         subplot_titles=("COVID-19 Cases", "Vaccine Doses"),
@@ -108,7 +108,7 @@ def showCV (city, start_date, end_date):
     fig.update_yaxes(title_text="Vaccine Doses", row=2, col=1)                 # Title of Y-Axis of Vaccine Graph
     fig.update_xaxes(title_text="Date", row=2, col=1)                          # Title of X-Axis of Vaccine Graphs
     fig.update_xaxes(matches='x')                                              # Allows Cases and Vaccine Graph to zoom together
-    fig.update_layout(height=800, autosize=True)                              # Height of the Final Graph
+    fig.update_layout(height=600, autosize=True)                              # Height of the Final Graph
     fig.update_layout(xaxis1_rangeslider_visible=False)                        # Hides Range Slider for Cases Graph
     fig.update_xaxes(rangeslider_thickness = 0.05)                             # Makes Range Slider Shorter
     fig.update_layout(xaxis_range=[start_date, end_date])                      # Update Date using Date Range Picker
