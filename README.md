@@ -8,7 +8,7 @@ A web application that displays COVID-19 data of cities across the United Kingdo
 The app can be viewed here on <a href="https://covid-19-uk.herokuapp.com/">Heroku</a> without the need to download anything. Suppose you want to host it locally, steps are provided below.
 
 
-## Installation
+## Installation - (Packages are needed to run the functions on the Jupyter Notebook)
 
 Clone the repository
 ```sh
