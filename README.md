@@ -48,3 +48,8 @@ A link will be shown in your terminal, visit it in your browser.
 - The Pie Charts are independent from the date range picker. The most recent data entries for vaccine doses will be used.
 - The Choropleth Graph is completely independent from user inputs.
 
+#### Contributors
+- vandamd - Vandam Dinh
+- cloud-26/bwahib29 - Bayan Wahib
+- maree26 - Margherita Parimbelli
+- Github-Elias - Elias Momann 
